@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="4">
+  <defs>
+    <linearGradient id="indo-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#DC2626" />
+      <stop offset="25%" stop-color="#DC2626" />
+      <stop offset="50%" stop-color="#FFFFFF" />
+      <stop offset="75%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#DC2626" />
+    </linearGradient>
+    <style>
+      .animated-line {
+        animation: slide 3s linear infinite;
+      }
+      @keyframes slide {
+        0% { transform: translateX(-800px); }
+        100% { transform: translateX(800px); }
+      }
+    </style>
+  </defs>
+  
+  <rect x="-800" y="0" width="2400" height="4" fill="url(#indo-grad)" class="animated-line" />
+</svg>

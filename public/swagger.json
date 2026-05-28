@@ -1,0 +1,209 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "GarudaShield AI API",
+    "version": "1.0.0",
+    "description": "Dokumentasi API resmi untuk GarudaShield AI. Dapat digunakan untuk integrasi sistem otomatis atau Bot (seperti BotWA)."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3003",
+      "description": "Local server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Web Scanner",
+      "description": "Endpoint pemindai kerentanan web"
+    },
+    {
+      "name": "APK Scanner",
+      "description": "Endpoint analisis malware aplikasi Android"
+    },
+    {
+      "name": "AI Chat",
+      "description": "Integrasi asisten AI"
+    }
+  ],
+  "paths": {
+    "/api/analyze-web": {
+      "post": {
+        "tags": ["Web Scanner"],
+        "summary": "Memulai pemindaian keamanan Web",
+        "description": "Meminta server untuk memulai *background scan* pada sebuah URL target (meliputi crawler, XSS, Nmap, ZAP).",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": { "type": "string", "example": "https://example.com" },
+                  "id": { "type": "string", "description": "(Opsional) Custom ID. Kosongkan agar server membuatkan ID otomatis untuk Anda." },
+                  "isPrivate": { "type": "boolean", "default": false, "description": "Sembunyikan dari riwayat publik" },
+                  "useVulnScan": { "type": "boolean", "default": false, "description": "Gunakan Nmap dan ZAP untuk deep scan" },
+                  "depth": { "type": "integer", "default": 1, "description": "Kedalaman crawl halaman web" }
+                },
+                "required": ["url"],
+                "example": {
+                  "url": "https://example.com",
+                  "isPrivate": false,
+                  "useVulnScan": false,
+                  "depth": 1
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Scan berhasil dimulai",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "id": { "type": "string" },
+                    "status": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "URL tidak valid atau berbahaya" },
+          "403": { "description": "Ditolak karena perlindungan SSRF" },
+          "429": { "description": "Terlalu banyak permintaan (Rate Limit)" }
+        }
+      }
+    },
+    "/api/analyze-web/status": {
+      "get": {
+        "tags": ["Web Scanner"],
+        "summary": "Mengecek status pemindaian Web",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status laporan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "done" },
+                    "id": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/upload-apk": {
+      "post": {
+        "tags": ["APK Scanner"],
+        "summary": "Mengunggah APK untuk dipindai",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "File aplikasi .apk"
+                  }
+                },
+                "required": ["file"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Berhasil upload",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "id": { "type": "string" },
+                    "filename": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/analyze-apk": {
+      "post": {
+        "tags": ["APK Scanner"],
+        "summary": "Menganalisis APK yang sudah diunggah",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "description": "ID dari response /api/upload-apk" }
+                },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Analisis dimulai"
+          }
+        }
+      }
+    },
+    "/api/chat": {
+      "post": {
+        "tags": ["AI Chat"],
+        "summary": "Tanya-Jawab dengan AI",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "messages": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "role": { "type": "string", "example": "user" },
+                        "content": { "type": "string", "example": "Halo, ini apa?" }
+                      }
+                    }
+                  }
+                },
+                "required": ["messages"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Balasan AI" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "name": "garudashield-ai",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start -p 3003",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "base32-encode": "^2.0.0",
+    "cheerio": "^1.2.0",
+    "framer-motion": "^12.40.0",
+    "js-sha3": "^0.9.3",
+    "lucide-react": "^1.16.0",
+    "next": "16.2.6",
+    "puppeteer": "^25.0.4",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-markdown": "^10.1.0",
+    "recharts": "^3.8.1",
+    "remark-gfm": "^4.0.1",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^6.0.1",
+    "tweetnacl": "^1.0.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  },
+  "overrides": {
+    "postcss": ">=8.5.10"
+  }
+}
